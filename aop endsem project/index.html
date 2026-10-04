@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Digital Notice Board</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Ionicons for icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <style>
+        .about-feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .about-feature-card { background: var(--glass-bg); border: 1px solid var(--card-border); padding: 1.5rem; border-radius: 1rem; }
+        .about-feature-card ion-icon { font-size: 2rem; color: var(--primary); margin-bottom: 1rem; }
+        .about-feature-card h3 { margin-bottom: 0.5rem; font-size: 1.2rem; }
+        .about-feature-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+        .flow-step { display: flex; align-items: flex-start; gap: 1.5rem; margin-bottom: 2rem; }
+        .flow-number { font-size: 1.5rem; font-weight: 800; color: var(--primary); background: var(--glass-bg); border: 1px solid var(--primary); width: 3rem; height: 3rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; flex-shrink: 0; }
+        .announcement-badge { display:inline-flex; align-items:center; gap:0.25rem; font-size:0.75rem; color:var(--primary); font-weight:700; background:rgba(0,100,255,0.1); padding:0.2rem 0.5rem; border-radius:0.25rem; }
+    </style>
+</head>
+<body>
+    <div class="mesh-background"></div>
+
+    <div id="authScreen" class="auth-screen">
+        <div id="loginBox" class="auth-box active">
+            <div class="auth-header">
+                <ion-icon name="school"></ion-icon>
+                <h2>Welcome Back</h2>
+                <p>Log in to CampusConnect</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">College Email</label>
+                    <input type="email" id="loginEmail" required placeholder="Enter your college email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-input-wrap">
+                        <input type="password" id="loginPassword" required placeholder="Enter your password">
+                        <ion-icon name="eye-outline" class="pwd-toggle"></ion-icon>
+                    </div>
+                </div>
+                <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; flex-direction:row;">
+                    <input type="checkbox" id="rememberMe" style="width:auto;">
+                    <label for="rememberMe" style="margin:0;">Remember Me</label>
+                </div>
+                <button type="submit" class="btn-primary full-width">Log In</button>
+                <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Create one</a></p>
+            </form>
+        </div>
+
+        <div id="signupBox" class="auth-box">
+            <div class="auth-header">
+                <ion-icon name="school"></ion-icon>
+                <h2>Create Account</h2>
+                <p>Join CampusConnect</p>
+            </div>
+            <form id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" required placeholder="Enter your full name" maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">College Email</label>
+                        <input type="email" id="signupEmail" required placeholder="Enter your college email">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <div class="password-input-wrap">
+                            <input type="password" id="signupPassword" required placeholder="Create a password">
+                            <ion-icon name="eye-outline" class="pwd-toggle"></ion-icon>
+                        </div>
+                        <ul class="pwd-requirements" id="pwdReqs">
+                            <li id="reqLength"><ion-icon name="close"></ion-icon> At least 8 characters</li>
+                            <li id="reqUpper"><ion-icon name="close"></ion-icon> One uppercase letter</li>
+                            <li id="reqLower"><ion-icon name="close"></ion-icon> One lowercase letter</li>
+                            <li id="reqNum"><ion-icon name="close"></ion-icon> One number</li>
+                        </ul>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <div class="password-input-wrap">
+                            <input type="password" id="signupConfirmPassword" required placeholder="Re-enter your password">
+                            <ion-icon name="eye-outline" class="pwd-toggle"></ion-icon>
+                        </div>
+                        <small id="pwdMatchError" class="error-text hidden">Passwords do not match.</small>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupClass">Class</label>
+                        <input type="text" id="signupClass" required placeholder="e.g., fybscit" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupRoll">Roll Number</label>
+                        <input type="text" id="signupRoll" required placeholder="e.g., 01" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupUid">UID</label>
+                        <input type="text" id="signupUid" required placeholder="e.g., 2605001" maxlength="20">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Profile Picture (Optional)</label>
+                    <div class="profile-pic-upload">
+                        <input type="file" id="signupAvatarInput" accept="image/*" style="display:none;">
+                        <button type="button" class="btn-secondary" onclick="document.getElementById('signupAvatarInput').click()">Upload</button>
+                        <span id="signupAvatarName" class="text-muted" style="margin-left: 10px; font-size: 0.85rem;">No file chosen</span>
+                        <p style="font-size: 0.8rem; margin-top: 5px; color: var(--text-muted)">Or skip to auto-generate an avatar.</p>
+                    </div>
+                </div>
+                <button type="submit" class="btn-primary full-width mt-3">Sign Up</button>
+                <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Log in</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App Content -->
+    <div id="appContent" class="hidden">
+        <header class="app-header">
+            <div class="logo" id="logoBtn" style="cursor: pointer;" title="About CampusConnect">
+                <ion-icon name="school"></ion-icon>
+                <h1>CampusConnect</h1>
+            </div>
+            <div class="search-container">
+                <ion-icon name="search"></ion-icon>
+                <input type="text" id="searchInput" placeholder="Search events, clubs, announcements...">
+            </div>
+            <div class="header-controls">
+                <button id="themeToggleBtn" class="icon-btn" title="Toggle Theme"><ion-icon name="moon"></ion-icon></button>
+                <div id="userProfileDisplay" class="user-profile-display" title="My Profile" style="cursor: pointer;">
+                    <img id="headerAvatar" src="" alt="Avatar">
+                    <span id="headerName"></span>
+                </div>
+            </div>
+        </header>
+
+        <section class="controls-section" id="controlsSection">
+            <div class="category-tabs" id="categoryTabs">
+                <button class="tab-btn active" data-category="All">All</button>
+                <button class="tab-btn" data-category="Events">Events</button>
+                <button class="tab-btn" data-category="Clubs">Clubs</button>
+                <button class="tab-btn" data-category="Volunteering">Volunteering</button>
+                <button class="tab-btn" data-category="Announcements">Announcements</button>
+            </div>
+            <div class="filter-actions">
+                <div class="sort-dropdown">
+                    <label for="sortSelect">Sort by:</label>
+                    <select id="sortSelect">
+                        <option value="upcoming">Upcoming Soonest</option>
+                        <option value="recent">Recently Posted</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+                <div class="toggle-container">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="hidePastToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <span>Hide Past Events</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Views -->
+        <main class="feed-container">
+            <div id="homeFeedView">
+                <div id="masonryFeed" class="masonry-layout"></div>
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="floating-icon"><ion-icon name="paper-plane-outline"></ion-icon></div>
+                    <h2>No posts found here</h2>
+                    <p>Be the first to share something with the campus!</p>
+                    <button class="btn-primary mt-3" onclick="document.getElementById('createPostModal').classList.add('active')">Be the first to post</button>
+                </div>
+            </div>
+
+            <div id="dashboardView" class="hidden">
+                <div class="dashboard-header" style="margin-bottom: 2rem;">
+                    <h2>Welcome back, <span id="dashWelcomeName" style="color:var(--primary);"></span> 👋</h2>
+                </div>
+                <h3 class="dash-section-title">Saved Posts</h3>
+                <div id="dashSavedEvents" class="masonry-layout"></div>
+                <div id="emptySaved" class="empty-state hidden" style="padding: 2rem;">
+                    <div class="floating-icon" style="font-size: 3rem;"><ion-icon name="bookmark-outline"></ion-icon></div>
+                    <p>You haven't saved any events or announcements yet.<br>Save posts you're interested in and they'll appear here.</p>
+                    <button class="btn-primary mt-3" onclick="document.getElementById('dockHomeBtn').click()">Explore Posts</button>
+                </div>
+                <hr style="border:none; border-top:1px solid var(--card-border); margin: 2rem 0;">
+
+                <h3 class="dash-section-title">Upcoming for you (RSVPs)</h3>
+                <div id="dashRsvpEvents" class="masonry-layout"></div>
+                <div id="emptyRsvp" class="empty-state hidden" style="padding: 2rem;">
+                    <p>You haven't RSVP'd to any events yet.</p>
+                </div>
+                <hr style="border:none; border-top:1px solid var(--card-border); margin: 2rem 0;">
+
+                <h3 class="dash-section-title">My Posts</h3>
+                <div id="dashMyEvents" class="masonry-layout"></div>
+                <div id="emptyMyEvents" class="empty-state hidden" style="padding: 2rem;">
+                    <p>You haven't posted anything yet.</p>
+                </div>
+            </div>
+
+            <div id="aboutView" class="hidden" style="max-width: 900px; margin: 0 auto; padding: 2rem 1rem 6rem 1rem;">
+                <div style="text-align:center; margin-bottom:4rem;">
+                    <h1 style="font-size:3.5rem; margin-bottom:1rem; font-weight:800; background: var(--gradient-primary); -webkit-background-clip: text; color: transparent;">CAMPUSCONNECT</h1>
+                    <p style="font-size:1.5rem; color:var(--text-muted); font-weight:300;">Your campus. Your community. One place.</p>
+                </div>
+                
+                <div style="background:var(--glass-bg); border:1px solid var(--card-border); padding:2rem; border-radius:1rem; margin-bottom:4rem; box-shadow:0 4px 20px rgba(0,0,0,0.05);">
+                    <p style="font-size:1.15rem; line-height:1.7; margin-bottom:1rem; color:var(--text-main);">CampusConnect is a centralized hub for college student activities, bringing events, clubs, volunteering opportunities and campus announcements together in one organized place.</p>
+                    <p style="font-size:1.15rem; line-height:1.7; color:var(--text-main);">From officially authorized college events to student-led activities, CampusConnect makes it easier for students to discover what's happening around their campus, save events they're interested in, RSVP, connect with organizers and keep track of their activities.</p>
+                </div>
+
+                <h2 style="font-size:2rem; margin-bottom:1.5rem; font-weight:700;">What is CampusConnect?</h2>
+                <p style="font-size:1.1rem; line-height:1.7; margin-bottom:4rem; color:var(--text-muted);">College life generates a constant stream of events, opportunities and announcements. CampusConnect brings them together so students don't have to hunt through multiple notice boards, WhatsApp groups, Instagram pages, club messages, and class groups to find what's happening.</p>
+
+                <h2 style="font-size:2rem; margin-bottom:2rem; font-weight:700;">What can students do?</h2>
+                <div class="about-feature-grid">
+                    <div class="about-feature-card"><ion-icon name="compass"></ion-icon><h3>Discover</h3><p>Find upcoming college events, club activities, volunteering opportunities and announcements.</p></div>
+                    <div class="about-feature-card"><ion-icon name="bookmark"></ion-icon><h3>Save</h3><p>Bookmark events you're interested in so you can find them later.</p></div>
+                    <div class="about-feature-card"><ion-icon name="calendar-number"></ion-icon><h3>RSVP</h3><p>Reserve your place at events and keep track of events you've joined.</p></div>
+                    <div class="about-feature-card"><ion-icon name="apps"></ion-icon><h3>Stay Organized</h3><p>Use My Events to see your RSVPs, saved events and upcoming activities.</p></div>
+                    <div class="about-feature-card"><ion-icon name="chatbubbles"></ion-icon><h3>Connect</h3><p>Contact event organizers when you need additional information.</p></div>
+                    <div class="about-feature-card"><ion-icon name="search"></ion-icon><h3>Explore</h3><p>Filter and search events using categories, tags, dates and event formats.</p></div>
+                    <div class="about-feature-card"><ion-icon name="people"></ion-icon><h3>Participate</h3><p>Discover both official college activities and student-led initiatives.</p></div>
+                    <div class="about-feature-card"><ion-icon name="create"></ion-icon><h3>Create</h3><p>Students and organizations can publish events and opportunities for the campus community.</p></div>
+                </div>
+
+                <div style="background:var(--glass-bg); border:1px solid var(--card-border); padding:2rem; border-radius:1rem; margin-bottom:4rem;">
+                    <h2 style="font-size:1.8rem; margin-bottom:1.5rem; font-weight:700;">One Hub for Every Side of Campus Life</h2>
+                    <p style="font-size:1.1rem; line-height:1.6; margin-bottom:1.5rem;">CampusConnect supports both official and unofficial activities:</p>
+                    <div style="display:flex; flex-direction:column; gap:1rem; margin-bottom:2rem;">
+                        <div style="display:flex; align-items:center; gap:0.75rem;"><ion-icon name="checkmark-circle" style="color:var(--success); font-size:1.5rem;"></ion-icon><span style="font-weight:600; font-size:1.1rem;">Official College Events:</span><span style="color:var(--text-muted);">Events authorized by the college or relevant college authorities.</span></div>
+                        <div style="display:flex; align-items:center; gap:0.75rem;"><ion-icon name="people" style="color:var(--text-muted); font-size:1.5rem;"></ion-icon><span style="font-weight:600; font-size:1.1rem;">Student Events:</span><span style="color:var(--text-muted);">Unofficial/student-led activities organized by students or student groups.</span></div>
+                    </div>
+                    <div style="background:rgba(255,200,0,0.1); border-left:4px solid var(--warning); padding:1rem; border-radius:0.5rem; font-size:0.9rem; color:var(--text-muted);">
+                        <strong>Note:</strong> Event organizers are responsible for accurately declaring whether an event is officially authorized by the college. CampusConnect provides the distinction as an organizational feature and does not independently verify authorization.
+                    </div>
+                </div>
+
+                <h2 style="font-size:2rem; margin-bottom:1.5rem; font-weight:700;">Why CampusConnect?</h2>
+                <p style="font-size:1.1rem; line-height:1.6; margin-bottom:1.5rem; color:var(--text-muted);">CampusConnect aims to make campus life:</p>
+                <ul style="list-style-type:none; padding-left:0; font-size:1.1rem; color:var(--text-main); margin-bottom:4rem; display:flex; flex-direction:column; gap:0.5rem;">
+                    <li><ion-icon name="ellipse" style="font-size:0.5rem; color:var(--primary); margin-right:0.5rem;"></ion-icon> More organized</li>
+                    <li><ion-icon name="ellipse" style="font-size:0.5rem; color:var(--primary); margin-right:0.5rem;"></ion-icon> Easier to discover</li>
+                    <li><ion-icon name="ellipse" style="font-size:0.5rem; color:var(--primary); margin-right:0.5rem;"></ion-icon> Easier to participate in</li>
+                    <li><ion-icon name="ellipse" style="font-size:0.5rem; color:var(--primary); margin-right:0.5rem;"></ion-icon> Less dependent on scattered communication channels</li>
+                </ul>
+
+                <h2 style="font-size:2rem; margin-bottom:2rem; font-weight:700;">How it Works</h2>
+                <div style="margin-bottom:4rem;">
+                    <div class="flow-step"><div class="flow-number">01</div><div><h3 style="font-size:1.3rem; margin-bottom:0.5rem;">Discover</h3><p style="color:var(--text-muted); font-size:1.05rem;">Browse what's happening on campus.</p></div></div>
+                    <div class="flow-step"><div class="flow-number">02</div><div><h3 style="font-size:1.3rem; margin-bottom:0.5rem;">Explore</h3><p style="color:var(--text-muted); font-size:1.05rem;">Open an event to see its details, organizer, location, tags, attachments and availability.</p></div></div>
+                    <div class="flow-step"><div class="flow-number">03</div><div><h3 style="font-size:1.3rem; margin-bottom:0.5rem;">Participate</h3><p style="color:var(--text-muted); font-size:1.05rem;">Save the event or RSVP.</p></div></div>
+                    <div class="flow-step"><div class="flow-number">04</div><div><h3 style="font-size:1.3rem; margin-bottom:0.5rem;">Stay Connected</h3><p style="color:var(--text-muted); font-size:1.05rem;">Keep track of your activities through My Events and contact organizers when needed.</p></div></div>
+                </div>
+
+                <div style="background:var(--glass-bg); border:1px solid var(--card-border); padding:2rem; border-radius:1rem; margin-bottom:4rem;">
+                    <h2 style="font-size:1.8rem; margin-bottom:1.5rem; font-weight:700;">Built With Security in Mind</h2>
+                    <ul style="list-style-type:none; padding-left:0; font-size:1rem; color:var(--text-main); margin-bottom:1.5rem; display:flex; flex-direction:column; gap:0.5rem;">
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> Passwords are not stored as plaintext.</li>
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> Authentication uses browser-based cryptographic APIs.</li>
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> Users can only modify their own posts.</li>
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> Organizer PINs provide an additional verification step for post management.</li>
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> User-generated text is sanitized before being rendered.</li>
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> External links are validated.</li>
+                        <li><ion-icon name="shield-checkmark" style="color:var(--primary); margin-right:0.5rem;"></ion-icon> Sensitive organizer contact information is only displayed according to the organizer's chosen visibility setting.</li>
+                    </ul>
+                    <div style="font-size:0.85rem; color:var(--text-muted); border-top:1px solid var(--card-border); padding-top:1rem;">
+                        <strong>Note:</strong> CampusConnect is a frontend-only academic project. A production deployment would require server-side authentication, secure server-side authorization, a database and protected backend services.
+                    </div>
+                </div>
+
+                <footer style="text-align:center; padding:2rem 0; border-top:1px solid var(--card-border);">
+                    <h2 style="font-size:1.5rem; font-weight:800; color:var(--primary); margin-bottom:0.5rem;">CampusConnect</h2>
+                    <p style="color:var(--text-muted); font-size:1rem; margin-bottom:1rem;">An organized digital hub for college life.</p>
+                    <p style="color:var(--text-muted); font-size:0.8rem;">Built as an academic project.</p>
+                </footer>
+            </div>
+        </main>
+
+        <nav class="floating-dock">
+            <button class="dock-btn active" id="dockHomeBtn" title="Home Feed">
+                <ion-icon name="home"></ion-icon>
+                <span>Home</span>
+            </button>
+            <button class="dock-btn" id="dockCreateBtn" title="Create Post">
+                <div class="dock-fab"><ion-icon name="add"></ion-icon></div>
+            </button>
+            <button class="dock-btn" id="dockDashboardBtn" title="Dashboard">
+                <ion-icon name="apps"></ion-icon>
+                <span>Dashboard</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Create Post Modal -->
+    <div id="createPostModal" class="modal-overlay">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>CREATE A POST</h2>
+                <button class="close-btn" id="closeCreateModal"><ion-icon name="close"></ion-icon></button>
+            </div>
+            <form id="createPostForm">
+                <div class="form-divider" style="margin-top:0;">Basic Information</div>
+                
+                <div id="postAnnouncementHelper" class="hidden" style="background:rgba(0,100,255,0.1); border-left:4px solid var(--primary); padding:1rem; border-radius:0.5rem; margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">
+                    <ion-icon name="information-circle" style="vertical-align:middle; font-size:1.2rem; margin-right:0.25rem;"></ion-icon> Announcements are informational posts and do not require RSVP or event details.
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label for="postTitle">Title *</label><input type="text" id="postTitle" required placeholder="Event or Announcement Title"></div>
+                    <div class="form-group"><label for="postCategory">Category *</label><select id="postCategory" required><option value="Events">Events</option><option value="Clubs">Clubs</option><option value="Volunteering">Volunteering</option><option value="Announcements">Announcements</option></select></div>
+                </div>
+                <div class="form-group"><label for="postOrganization">Club / Organization</label><input type="text" id="postOrganization" placeholder="e.g., Xavier's Coding Club"></div>
+                <div class="form-group"><label for="postDescription">Description *</label><textarea id="postDescription" rows="4" required placeholder="Provide all the details..."></textarea></div>
+
+                <div class="form-divider">Event Details</div>
+                <div class="form-row">
+                    <div class="form-group"><label for="postDate">Date <span id="postDateReqStar" style="color:red;">*</span></label><input type="date" id="postDate" required></div>
+                    <div class="form-group"><label for="postTime">Time <span id="postTimeReqStar" style="color:red;">*</span></label><input type="time" id="postTime" required></div>
+                </div>
+                
+                <div id="postEventFormatContainer">
+                    <div class="form-group">
+                        <label>Event Format *</label>
+                        <div style="display:flex; gap:1.5rem; margin-top:0.5rem;">
+                            <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="eventFormat" value="offline" required> Offline</label>
+                            <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="eventFormat" value="online" required> Online</label>
+                        </div>
+                    </div>
+
+                    <div id="offlineFields" class="hidden">
+                        <div class="form-group"><label for="postVenue">Venue *</label><input type="text" id="postVenue" placeholder="e.g., Xavier's College Auditorium"></div>
+                        <div class="form-group"><label for="postLocationLink">Location Link (Optional)</label><input type="url" id="postLocationLink" placeholder="Paste Google Maps or campus map link"></div>
+                    </div>
+                    <div id="onlineFields" class="hidden">
+                        <div class="form-group"><label for="postMeetingLink">Online Meeting Link *</label><input type="url" id="postMeetingLink" placeholder="Paste meeting link"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Source *</label>
+                    <div style="display:flex; gap:1.5rem; margin-top:0.5rem; flex-wrap:wrap;">
+                        <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="eventStatus" value="official" required> Official College</label>
+                        <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="eventStatus" value="unofficial" required> Student / Unofficial</label>
+                    </div>
+                    <small style="color:var(--text-muted); display:block; margin-top:0.3rem;">Event organizers are responsible for accurately declaring authorization.</small>
+                </div>
+
+                <div class="form-divider">Additional Information</div>
+                
+                <div id="postCapacityContainer" class="form-row">
+                    <div class="form-group" style="flex:1;"><label for="postTags">Tags</label><input type="text" id="postTags" placeholder="e.g., #Technology #Workshop"></div>
+                    <div class="form-group" style="flex:1;"><label for="postCapacity">Maximum Participants</label><input type="number" id="postCapacity" placeholder="Unlimited capacity" min="1"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label for="postContact">Contact Number</label><input type="tel" id="postContact" placeholder="+91 XXXXX XXXXX"></div>
+                    <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; flex-direction:row; margin-top:2rem;"><input type="checkbox" id="postShowContact" checked style="width:auto;"><label for="postShowContact" style="margin:0;">Show contact number</label></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Banner Image URL</label>
+                    <input type="url" id="postImage" placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <small style="color:var(--text-muted); display:block; margin-bottom:0.5rem;">Add supporting documents, posters, schedules, or event guidelines. (Max 3 files, 500 KB each. PDF, JPG, PNG)</small>
+                    <div id="attachmentsPreview" style="margin-bottom:0.5rem;"></div>
+                    <input type="file" id="postAttachmentInput" accept=".pdf, .jpg, .jpeg, .png" style="display:none;">
+                    <button type="button" class="btn-secondary" id="addAttachmentBtn"><ion-icon name="attach"></ion-icon> Add Attachment</button>
+                </div>
+
+                <div class="form-divider">Organizer Details</div>
+                <div class="form-group">
+                    <label for="postPin">Organizer PIN (4-digits) *</label>
+                    <input type="password" id="postPin" required pattern="\d{4}" maxlength="4" placeholder="e.g., 1234">
+                    <small style="display:block; margin-top:0.2rem; color:var(--text-muted)">Needed to edit, view attendees or delete post</small>
+                </div>
+
+                <button type="submit" class="btn-primary full-width mt-3">Create Post</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div id="editPostModal" class="modal-overlay">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2>Editing Post</h2>
+                <button class="close-btn" id="closeEditModal"><ion-icon name="close"></ion-icon></button>
+            </div>
+            <form id="editPostForm">
+                <div class="form-divider" style="margin-top:0;">Basic Information</div>
+
+                <div id="editAnnouncementHelper" class="hidden" style="background:rgba(0,100,255,0.1); border-left:4px solid var(--primary); padding:1rem; border-radius:0.5rem; margin-bottom:1rem; font-size:0.9rem; color:var(--text-main);">
+                    <ion-icon name="information-circle" style="vertical-align:middle; font-size:1.2rem; margin-right:0.25rem;"></ion-icon> Announcements are informational posts and do not require RSVP or event details.
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label for="editTitle">Title *</label><input type="text" id="editTitle" required></div>
+                    <div class="form-group"><label for="editCategory">Category *</label><select id="editCategory" required><option value="Events">Events</option><option value="Clubs">Clubs</option><option value="Volunteering">Volunteering</option><option value="Announcements">Announcements</option></select></div>
+                </div>
+                <div class="form-group"><label for="editOrganization">Club / Organization</label><input type="text" id="editOrganization"></div>
+                <div class="form-group"><label for="editDescription">Description *</label><textarea id="editDescription" rows="4" required></textarea></div>
+
+                <div class="form-divider">Event Details</div>
+                <div class="form-row">
+                    <div class="form-group"><label for="editDate">Date <span id="editDateReqStar" style="color:red;">*</span></label><input type="date" id="editDate" required></div>
+                    <div class="form-group"><label for="editTime">Time <span id="editTimeReqStar" style="color:red;">*</span></label><input type="time" id="editTime" required></div>
+                </div>
+                
+                <div id="editEventFormatContainer">
+                    <div class="form-group">
+                        <label>Event Format *</label>
+                        <div style="display:flex; gap:1.5rem; margin-top:0.5rem;">
+                            <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="editFormat" value="offline" required> Offline</label>
+                            <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="editFormat" value="online" required> Online</label>
+                        </div>
+                    </div>
+
+                    <div id="editOfflineFields" class="hidden">
+                        <div class="form-group"><label for="editVenue">Venue *</label><input type="text" id="editVenue"></div>
+                        <div class="form-group"><label for="editLocationLink">Location Link (Optional)</label><input type="url" id="editLocationLink"></div>
+                    </div>
+                    <div id="editOnlineFields" class="hidden">
+                        <div class="form-group"><label for="editMeetingLink">Online Meeting Link *</label><input type="url" id="editMeetingLink"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Source *</label>
+                    <div style="display:flex; gap:1.5rem; margin-top:0.5rem; flex-wrap:wrap;">
+                        <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="editStatus" value="official" required> Official College</label>
+                        <label style="display:flex; align-items:center; gap:0.25rem; cursor:pointer;"><input type="radio" name="editStatus" value="unofficial" required> Student / Unofficial</label>
+                    </div>
+                </div>
+
+                <div class="form-divider">Additional Information</div>
+                
+                <div id="editCapacityContainer" class="form-row">
+                    <div class="form-group" style="flex:1;"><label for="editTags">Tags</label><input type="text" id="editTags"></div>
+                    <div class="form-group" style="flex:1;"><label for="editCapacity">Maximum Participants</label><input type="number" id="editCapacity" min="1"><small id="editCapacityNotice" style="color:var(--text-muted); display:block; margin-top:0.2rem;"></small></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label for="editContact">Contact Number</label><input type="tel" id="editContact"></div>
+                    <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; flex-direction:row; margin-top:2rem;"><input type="checkbox" id="editShowContact" style="width:auto;"><label for="editShowContact" style="margin:0;">Show contact number</label></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Banner Image URL</label>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input type="url" id="editImage" style="flex:1;">
+                        <button type="button" class="btn-secondary btn-small" id="clearEditBannerBtn" style="white-space:nowrap;">Clear Banner</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Attachments</label>
+                    <small style="color:var(--text-muted); display:block; margin-bottom:0.5rem;">(Max 3 files, 500 KB each. PDF, JPG, PNG)</small>
+                    <div id="editAttachmentsPreview" style="margin-bottom:0.5rem;"></div>
+                    <input type="file" id="editAttachmentInput" accept=".pdf, .jpg, .jpeg, .png" style="display:none;">
+                    <button type="button" class="btn-secondary" id="editAddAttachmentBtn"><ion-icon name="attach"></ion-icon> Add Attachment</button>
+                </div>
+
+                <div class="form-divider">Verify Organizer PIN</div>
+                <div class="form-group">
+                    <label for="editPin">Enter your 4-digit Organizer PIN *</label>
+                    <input type="password" id="editPin" required pattern="\d{4}" maxlength="4" placeholder="e.g., 1234">
+                    <small id="editPinError" class="error-text hidden" style="display:block; margin-top:0.2rem;">Incorrect Organizer PIN. Your changes were not saved.</small>
+                </div>
+
+                <div style="display:flex; gap:1rem; margin-top:2rem;">
+                    <button type="button" class="btn-secondary full-width" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="btn-primary full-width">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Event Details Modal -->
+    <div id="eventDetailsModal" class="modal-overlay">
+        <div class="modal-content large" style="padding: 0; overflow: hidden;">
+            <div class="modal-header" style="position: absolute; top: 1rem; right: 1rem; z-index: 10; margin:0;">
+                <button class="card-icon-btn" id="closeEventDetailsModal" style="background: var(--glass-bg);"><ion-icon name="close"></ion-icon></button>
+            </div>
+            <div id="eventDetailsContent" style="max-height: 85vh; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- Attendees / Action PIN Modal -->
+    <div id="pinPromptModal" class="modal-overlay">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2 id="pinPromptTitle">Verification Required</h2>
+                <button class="close-btn" id="closePinModal"><ion-icon name="close"></ion-icon></button>
+            </div>
+            <div class="form-group">
+                <label>Enter 4-digit Organizer PIN:</label>
+                <input type="password" id="pinInput" maxlength="4" pattern="\d{4}">
+            </div>
+            <button id="verifyPinBtn" class="btn-primary full-width">Verify</button>
+            <p id="pinError" class="error-text hidden">Incorrect PIN.</p>
+        </div>
+    </div>
+
+    <!-- Attendees List Modal -->
+    <div id="attendeesModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>RSVP'd Students</h2>
+                <button class="close-btn" id="closeAttendeesModal"><ion-icon name="close"></ion-icon></button>
+            </div>
+            <div id="attendeesList" class="attendees-list"></div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div id="profileModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Your Profile</h2>
+                <button class="close-btn" id="closeProfileModal"><ion-icon name="close"></ion-icon></button>
+            </div>
+            <div class="profile-details-container">
+                <div class="profile-header-info">
+                    <div class="profile-pic-wrapper">
+                        <img id="modalProfilePic" src="" alt="Profile Picture">
+                        <div class="profile-pic-actions">
+                            <button id="changePicBtn" class="btn-secondary btn-small" title="Change Picture"><ion-icon name="camera"></ion-icon></button>
+                            <button id="removePicBtn" class="btn-secondary btn-small danger" title="Remove Picture"><ion-icon name="trash"></ion-icon></button>
+                            <input type="file" id="updateAvatarInput" accept="image/*" style="display:none;">
+                        </div>
+                    </div>
+                    <div class="profile-text-info">
+                        <h3 id="modalProfileName">Name</h3>
+                        <p class="text-muted"><span id="modalProfileClass">Class</span> &middot; Roll <span id="modalProfileRoll">00</span></p>
+                        <p class="text-muted">UID: <span id="modalProfileUid">000</span></p>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-box"><div class="stat-value" id="modalProfilePosts">0</div><div class="stat-label">Posts</div></div>
+                    <div class="stat-box"><div class="stat-value" id="modalProfileRsvps">0</div><div class="stat-label">RSVPs</div></div>
+                </div>
+                <div class="profile-extra-info">
+                    <p><ion-icon name="mail"></ion-icon> <span id="modalProfileEmail"></span></p>
+                    <p><ion-icon name="calendar"></ion-icon> Joined: <span id="modalProfileJoined"></span></p>
+                </div>
+                <button id="logoutBtn" class="btn-secondary full-width mt-3 danger-border"><ion-icon name="log-out-outline"></ion-icon> Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
